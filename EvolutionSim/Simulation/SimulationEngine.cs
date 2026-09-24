@@ -42,6 +42,9 @@ public sealed class SimulationEngine
     private readonly FeedingSpecializationSelectionDiagnosticsCalculator
         _feedingSpecializationSelectionDiagnosticsCalculator;
 
+    private readonly MorphologyStatisticsCalculator
+        _morphologyStatisticsCalculator;
+
     public SimulationState State =>
         _state;
 
@@ -93,6 +96,9 @@ public sealed class SimulationEngine
 
         _feedingSpecializationSelectionDiagnosticsCalculator =
             new FeedingSpecializationSelectionDiagnosticsCalculator();
+
+        _morphologyStatisticsCalculator =
+            new MorphologyStatisticsCalculator();
 
         // La especie ancestral ya fue detectada por SimulationFactory
         // antes de construir el motor.
@@ -1914,6 +1920,76 @@ public sealed class SimulationEngine
                     );
 
 
+            MorphologyStatistics
+                morphologyStatistics =
+                    _morphologyStatisticsCalculator
+                        .Calculate(
+                            state.World,
+                            state.Population
+                        );
+
+
+            SimulationMorphologyDiagnosticsStepResult
+                morphologyDiagnosticsResult =
+                    new(
+                        LivingPopulation:
+                            morphologyStatistics
+                                .LivingPopulation,
+
+                        ExpressedOrganisms:
+                            morphologyStatistics
+                                .ExpressedOrganisms,
+
+                        AverageBodyScale:
+                            morphologyStatistics
+                                .AverageBodyScale,
+
+                        AverageStructuralExpressionMagnitude:
+                            morphologyStatistics
+                                .AverageStructuralExpressionMagnitude,
+
+                        Channels:
+                            morphologyStatistics
+                                .Channels
+                                .Select(
+                                    MapMorphologyChannel
+                                )
+                                .ToList(),
+
+                        Regions:
+                            morphologyStatistics
+                                .Regions
+                                .Select(
+                                    region =>
+                                        new SimulationRegionalMorphologyStepResult(
+                                            RegionId:
+                                                region.RegionId,
+
+                                            RegionName:
+                                                region.RegionName,
+
+                                            Population:
+                                                region.Population,
+
+                                            AverageBodyScale:
+                                                region.AverageBodyScale,
+
+                                            AverageStructuralExpressionMagnitude:
+                                                region.AverageStructuralExpressionMagnitude,
+
+                                            Channels:
+                                                region
+                                                    .Channels
+                                                    .Select(
+                                                        MapMorphologyChannel
+                                                    )
+                                                    .ToList()
+                                        )
+                                )
+                                .ToList()
+                    );
+
+
             List<SimulationMigrationRouteStepResult>
                 migrationRouteResults =
                     migrationSystem.LastMigrationRoutes
@@ -2111,7 +2187,8 @@ public sealed class SimulationEngine
                     ThermalRegulationDiagnostics: thermalRegulationDiagnosticsResult,
                     BodySizeDiagnostics: bodySizeDiagnosticsResult,
                     LocomotionDiagnostics: locomotionDiagnosticsResult,
-                    FeedingSpecializationDiagnostics: feedingSpecializationDiagnosticsResult
+                    FeedingSpecializationDiagnostics: feedingSpecializationDiagnosticsResult,
+                    MorphologyDiagnostics: morphologyDiagnosticsResult
                 );
 
 
@@ -2333,6 +2410,44 @@ public sealed class SimulationEngine
                         $"EnergyMult: {feedingRegion.Living.AveragePlantEnergyMultiplier:F4} | " +
                         $"PlantDig: {feedingRegion.Living.AveragePlantDigestionEfficiency:F3} | " +
                         $"Assim: {feedingRegion.Living.AverageEffectivePlantEnergyAssimilation:F3}"
+                    );
+                }
+
+
+                _output.WriteLine(
+                    $"   Morfologia | " +
+                    $"Expresados: {morphologyStatistics.ExpressedOrganisms}/{morphologyStatistics.LivingPopulation} | " +
+                    $"BodyScale: {morphologyStatistics.AverageBodyScale:F3} | " +
+                    $"StructMag: {morphologyStatistics.AverageStructuralExpressionMagnitude:F4}"
+                );
+
+
+                foreach (
+                    MorphologyChannelStatistics morphologyChannel
+                    in morphologyStatistics.Channels
+                )
+                {
+                    _output.WriteLine(
+                        $"      {morphologyChannel.Channel,-20} | " +
+                        $"Expr: {morphologyChannel.ExpressingOrganisms,5} | " +
+                        $"Avg: {morphologyChannel.AverageModifier:+0.0000;-0.0000;0.0000} | " +
+                        $"Std: {morphologyChannel.StandardDeviation:F4} | " +
+                        $"Min: {morphologyChannel.MinimumModifier:+0.0000;-0.0000;0.0000} | " +
+                        $"Max: {morphologyChannel.MaximumModifier:+0.0000;-0.0000;0.0000}"
+                    );
+                }
+
+
+                foreach (
+                    RegionalMorphologyStatistics morphologyRegion
+                    in morphologyStatistics.Regions
+                )
+                {
+                    _output.WriteLine(
+                        $"      {morphologyRegion.RegionName,-18} | " +
+                        $"Pop: {morphologyRegion.Population,5} | " +
+                        $"BodyScale: {morphologyRegion.AverageBodyScale:F3} | " +
+                        $"StructMag: {morphologyRegion.AverageStructuralExpressionMagnitude:F4}"
                     );
                 }
 
@@ -3687,6 +3802,32 @@ public sealed class SimulationEngine
                 state.Population.Count
                 ==
                 0
+        );
+    }
+
+
+    private static SimulationMorphologyChannelStepResult
+        MapMorphologyChannel(
+            MorphologyChannelStatistics channel)
+    {
+        return new SimulationMorphologyChannelStepResult(
+            Channel:
+                channel.Channel.ToString(),
+
+            ExpressingOrganisms:
+                channel.ExpressingOrganisms,
+
+            AverageModifier:
+                channel.AverageModifier,
+
+            StandardDeviation:
+                channel.StandardDeviation,
+
+            MinimumModifier:
+                channel.MinimumModifier,
+
+            MaximumModifier:
+                channel.MaximumModifier
         );
     }
 

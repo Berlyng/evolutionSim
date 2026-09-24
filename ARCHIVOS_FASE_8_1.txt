@@ -1,0 +1,25 @@
+FASE 8.1 — ARCHIVOS
+
+NUEVOS:
+- EvolutionSim/Models/MorphologyChannel.cs
+- EvolutionSim/Models/MorphologyProfile.cs
+- EvolutionSim/Models/GenomeMorphologyMapper.cs
+- EvolutionSim/Evolution/MorphologyStatisticsCalculator.cs
+
+REEMPLAZAR:
+- EvolutionSim/Models/Organism.cs
+- EvolutionSim/Simulation/SimulationStepResult.cs
+- EvolutionSim/Simulation/SimulationEngine.cs
+
+NO CAMBIAN:
+- EvolutionSim/Program.cs
+- EvolutionSim/Simulation/SimulationConfig.cs
+- EvolutionSim/Simulation/PhenotypePhase7Profile.cs
+- EvolutionSim/Models/PhenotypeProfile.cs
+- EvolutionSim/Models/GenomePhenotypeMapper.cs
+- Genome / mutación / recombinación
+- sistemas ecológicos
+- runners experimentales
+
+NUGET:
+- ninguno

@@ -34,7 +34,8 @@ public sealed record SimulationStepResult(
     SimulationThermalRegulationDiagnosticsStepResult? ThermalRegulationDiagnostics = null,
     SimulationBodySizeDiagnosticsStepResult? BodySizeDiagnostics = null,
     SimulationLocomotionDiagnosticsStepResult? LocomotionDiagnostics = null,
-    SimulationFeedingSpecializationDiagnosticsStepResult? FeedingSpecializationDiagnostics = null
+    SimulationFeedingSpecializationDiagnosticsStepResult? FeedingSpecializationDiagnostics = null,
+    SimulationMorphologyDiagnosticsStepResult? MorphologyDiagnostics = null
 );
 
 public sealed record SimulationRegionStepResult(
@@ -465,4 +466,35 @@ public sealed record SimulationFeedingSpecializationCohortStepResult(
     double P10Modifier,
     double P50Modifier,
     double P90Modifier
+);
+
+
+
+public sealed record SimulationMorphologyDiagnosticsStepResult(
+    int LivingPopulation,
+    int ExpressedOrganisms,
+    double AverageBodyScale,
+    double AverageStructuralExpressionMagnitude,
+    IReadOnlyList<SimulationMorphologyChannelStepResult> Channels,
+    IReadOnlyList<SimulationRegionalMorphologyStepResult> Regions
+);
+
+
+public sealed record SimulationRegionalMorphologyStepResult(
+    int RegionId,
+    string RegionName,
+    int Population,
+    double AverageBodyScale,
+    double AverageStructuralExpressionMagnitude,
+    IReadOnlyList<SimulationMorphologyChannelStepResult> Channels
+);
+
+
+public sealed record SimulationMorphologyChannelStepResult(
+    string Channel,
+    int ExpressingOrganisms,
+    double AverageModifier,
+    double StandardDeviation,
+    double MinimumModifier,
+    double MaximumModifier
 );

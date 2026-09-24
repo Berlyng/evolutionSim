@@ -31,6 +31,19 @@ public class Organism
 
 
     /// <summary>
+    /// Fase 8.1:
+    /// morfología determinista derivada del genoma.
+    ///
+    /// Es completamente pasiva: consultar esta propiedad no modifica
+    /// la ecología ni consume Random.
+    /// </summary>
+    public MorphologyProfile Morphology =>
+        GenomeMorphologyMapper.Express(
+            Genome
+        );
+
+
+    /// <summary>
     /// Fase 7.9:
     /// expresión del genoma estructural asignada al canal
     /// FeedingSpecialization.
