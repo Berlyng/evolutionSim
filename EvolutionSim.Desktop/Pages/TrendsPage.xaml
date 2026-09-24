@@ -1,0 +1,63 @@
+﻿<Page x:Class="EvolutionSim.Desktop.Pages.TrendsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:EvolutionSim.Desktop"
+      Background="{StaticResource BgBrush}"
+      Foreground="{StaticResource TextPrimaryBrush}">
+
+    <Grid Margin="20">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Margin="0,14,0,0">
+            <Grid Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="270" />
+                    <RowDefinition Height="270" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,8,16"
+                                Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush1}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="10">
+                    <local:TrendChartControl x:Name="PopulationTrendChart"
+                                                     ChartTitle="Población por región" />
+                </Border>
+
+                <Border Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="8,0,0,16"
+                                Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush1}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="10">
+                    <local:TrendChartControl x:Name="BirthDeathTrendChart"
+                                                     ChartTitle="Nacimientos vs muertes" />
+                </Border>
+
+                <Border Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="0"
+                                Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush1}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="10">
+                    <local:TrendChartControl x:Name="OptimalTemperatureTrendChart"
+                                                     ChartTitle="OptimalTemperature media por región"
+                                                     ValueSuffix=" °C" />
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+
+</Page>

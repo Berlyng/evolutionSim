@@ -1,0 +1,141 @@
+﻿<Page x:Class="EvolutionSim.Desktop.Pages.ReplayPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:EvolutionSim.Desktop"
+      Background="{StaticResource BgBrush}"
+      Foreground="{StaticResource TextPrimaryBrush}">
+
+    <Grid Margin="20">
+        <Grid Margin="0,14,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <UniformGrid Grid.Row="0"
+                                 Columns="3"
+                                 Margin="0,0,0,14">
+                <Border Style="{StaticResource KpiCard}"
+                                Background="{StaticResource CardBlueBrush}"
+                                BorderBrush="{StaticResource InfoBrush}"
+                                Margin="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Text="SNAPSHOTS"
+                                           Style="{StaticResource KpiLabel}" />
+                        <TextBlock x:Name="SnapshotCountText"
+                                           Text="0"
+                                           Foreground="{StaticResource InfoBrush}"
+                                           Style="{StaticResource KpiValue}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource KpiCard}"
+                                Background="{StaticResource CardPurpleBrush}"
+                                BorderBrush="{StaticResource PurpleBrush}"
+                                Margin="8,0">
+                    <StackPanel>
+                        <TextBlock Text="VISTA ACTUAL"
+                                           Style="{StaticResource KpiLabel}" />
+                        <TextBlock x:Name="ReplayCycleText"
+                                           Text="EN VIVO"
+                                           Foreground="{StaticResource PurpleBrush}"
+                                           Style="{StaticResource KpiValue}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource KpiCard}"
+                                Background="{StaticResource CardGreenBrush}"
+                                BorderBrush="{StaticResource SuccessBrush}"
+                                Margin="8,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="CICLO VIVO"
+                                           Style="{StaticResource KpiLabel}" />
+                        <TextBlock x:Name="LiveCycleText"
+                                           Text="0"
+                                           Foreground="{StaticResource SuccessBrush}"
+                                           Style="{StaticResource KpiValue}" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <Border Grid.Row="1"
+                            Background="{StaticResource SurfaceBrush}"
+                            BorderBrush="{StaticResource BorderBrush1}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="14,10"
+                            Margin="0,0,0,14">
+                <DockPanel LastChildFill="False">
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="NAVEGACIÓN TEMPORAL"
+                                           Style="{StaticResource SectionLabel}" />
+                        <TextBlock x:Name="ReplayModeText"
+                                           Text="Auto snapshot cada 25 ciclos"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontSize="12"
+                                           Margin="0,3,0,0" />
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Right"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+                        <Button x:Name="PreviousSnapshotButton"
+                                        Content="← Anterior"
+                                        Width="104"
+                                        Margin="0,0,8,0" />
+                        <Button x:Name="NextSnapshotButton"
+                                        Content="Siguiente →"
+                                        Width="104"
+                                        Margin="0,0,8,0" />
+                        <Button x:Name="LiveSnapshotButton"
+                                        Content="● Volver a vivo"
+                                        Width="132"
+                                        Style="{StaticResource PrimaryButton}" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <GroupBox Grid.Row="2"
+                              Header="SNAPSHOTS DISPONIBLES">
+                <DataGrid x:Name="SnapshotGrid"
+                                  ItemsSource="{Binding SnapshotRows}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  SelectionMode="Single"
+                                  HeadersVisibility="Column"
+                                  Margin="4">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ciclo"
+                                                    Binding="{Binding Cycle}"
+                                                    Width="80" />
+                        <DataGridTextColumn Header="Población"
+                                                    Binding="{Binding Population}"
+                                                    Width="90" />
+                        <DataGridTextColumn Header="Nac"
+                                                    Binding="{Binding Births}"
+                                                    Width="65" />
+                        <DataGridTextColumn Header="Muert"
+                                                    Binding="{Binding Deaths}"
+                                                    Width="65" />
+                        <DataGridTextColumn Header="Especies"
+                                                    Binding="{Binding SpeciesCount}"
+                                                    Width="75" />
+                        <DataGridTextColumn Header="Generación"
+                                                    Binding="{Binding AverageGeneration, StringFormat=F1}"
+                                                    Width="90" />
+                        <DataGridTextColumn Header="Migraciones"
+                                                    Binding="{Binding Migrations}"
+                                                    Width="95" />
+                        <DataGridTextColumn Header="Mov. local"
+                                                    Binding="{Binding LocalMovements}"
+                                                    Width="95" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+
+</Page>

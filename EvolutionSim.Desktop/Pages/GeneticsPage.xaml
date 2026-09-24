@@ -1,0 +1,293 @@
+﻿<Page x:Class="EvolutionSim.Desktop.Pages.GeneticsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BgBrush}"
+      Foreground="{StaticResource TextPrimaryBrush}">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <UniformGrid Grid.Row="0"
+                     Columns="4"
+                     Margin="0,0,0,14">
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardBlueBrush}"
+                    BorderBrush="{StaticResource InfoBrush}"
+                    Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="GENOMAS CON LOCI"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="GenomesWithLociText"
+                               Text="0"
+                               Foreground="{StaticResource InfoBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardGreenBrush}"
+                    BorderBrush="{StaticResource SuccessBrush}"
+                    Margin="8,0">
+                <StackPanel>
+                    <TextBlock Text="LOCI ACTIVOS"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="ActiveLociText"
+                               Text="0"
+                               Foreground="{StaticResource SuccessBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardOrangeBrush}"
+                    BorderBrush="{StaticResource WarnBrush}"
+                    Margin="8,0">
+                <StackPanel>
+                    <TextBlock Text="LOCI INACTIVOS"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="InactiveLociText"
+                               Text="0"
+                               Foreground="{StaticResource WarnBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardPurpleBrush}"
+                    BorderBrush="{StaticResource PurpleBrush}"
+                    Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="FAMILIAS"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="GenomeFamiliesText"
+                               Text="0"
+                               Foreground="{StaticResource PurpleBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <Grid Grid.Row="1"
+              Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Style="{StaticResource KpiCard}"
+                    Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="LOCI TOTALES"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="TotalLociText"
+                               Text="0"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Style="{StaticResource KpiCard}"
+                    Margin="8,0">
+                <StackPanel>
+                    <TextBlock Text="PROMEDIO / GENOMA"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="AverageLociText"
+                               Text="0.000"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Style="{StaticResource KpiCard}"
+                    Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="MÁXIMO EN UN GENOMA"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="MaximumLociText"
+                               Text="0"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+
+        <UniformGrid Grid.Row="2"
+                     Columns="4"
+                     Margin="0,0,0,14">
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardGreenBrush}"
+                    BorderBrush="{StaticResource SuccessBrush}"
+                    Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="COST MULT. MEDIO"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="MetabolicCostMultiplierText"
+                               Text="1.0000"
+                               Foreground="{StaticResource SuccessBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardGreenBrush}"
+                    BorderBrush="{StaticResource SuccessBrush}"
+                    Margin="8,0">
+                <StackPanel>
+                    <TextBlock Text="BENEFICIADOS"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="MetabolicBeneficialText"
+                               Text="0"
+                               Foreground="{StaticResource SuccessBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardRedBrush}"
+                    BorderBrush="{StaticResource DangerBrush}"
+                    Margin="8,0">
+                <StackPanel>
+                    <TextBlock Text="PERJUDICADOS"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="MetabolicDetrimentalText"
+                               Text="0"
+                               Foreground="{StaticResource DangerBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource KpiCard}"
+                    Background="{StaticResource CardCyanBrush}"
+                    BorderBrush="{StaticResource CyanBrush}"
+                    Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="Δ COSTO MEDIO"
+                               Style="{StaticResource KpiLabel}" />
+                    <TextBlock x:Name="MetabolicCostDeltaText"
+                               Text="0.000 %"
+                               Foreground="{StaticResource CyanBrush}"
+                               Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <GroupBox Grid.Row="3"
+                  Header="FAMILIAS DE LOCI ESTRUCTURALES">
+            <DataGrid ItemsSource="{Binding GenomeFamilyRows}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      HeadersVisibility="Column"
+                      Margin="4">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Familia"
+                                        Binding="{Binding FamilyLabel}"
+                                        Width="150" />
+                    <DataGridTextColumn Header="Portadores"
+                                        Binding="{Binding CarrierCount}"
+                                        Width="90" />
+                    <DataGridTextColumn Header="Copias"
+                                        Binding="{Binding CopyCount}"
+                                        Width="80" />
+                    <DataGridTextColumn Header="Activas"
+                                        Binding="{Binding ActiveCopyCount}"
+                                        Width="80" />
+                    <DataGridTextColumn Header="Valor medio"
+                                        Binding="{Binding AverageValue, StringFormat=F3}"
+                                        Width="100" />
+                    <DataGridTextColumn Header="% población"
+                                        Binding="{Binding CarrierPercent, StringFormat=F2}"
+                                        Width="110" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+
+        <GroupBox Grid.Row="4"
+                  Header="SELECCIÓN METABÓLICA POR REGIÓN"
+                  Margin="0,14,0,0">
+            <DataGrid ItemsSource="{Binding MetabolicSelectionRows}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      HeadersVisibility="Column"
+                      Margin="4">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Región"
+                                        Binding="{Binding RegionName}"
+                                        Width="170" />
+                    <DataGridTextColumn Header="Vivos"
+                                        Binding="{Binding LivingCount}"
+                                        Width="70" />
+                    <DataGridTextColumn Header="Living Avg"
+                                        Binding="{Binding LivingAverageModifier, StringFormat=F4}"
+                                        Width="90" />
+                    <DataGridTextColumn Header="Padres"
+                                        Binding="{Binding ParentCount}"
+                                        Width="70" />
+                    <DataGridTextColumn Header="Parent Avg"
+                                        Binding="{Binding ParentAverageModifier, StringFormat=F4}"
+                                        Width="90" />
+                    <DataGridTextColumn Header="P10"
+                                        Binding="{Binding P10Modifier, StringFormat=F4}"
+                                        Width="75" />
+                    <DataGridTextColumn Header="P50"
+                                        Binding="{Binding P50Modifier, StringFormat=F4}"
+                                        Width="75" />
+                    <DataGridTextColumn Header="P90"
+                                        Binding="{Binding P90Modifier, StringFormat=F4}"
+                                        Width="75" />
+                    <DataGridTextColumn Header="B/D/N"
+                                        Binding="{Binding BalanceLabel}"
+                                        Width="110" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="5"
+                  Header="EXPRESIÓN FENOTÍPICA POTENCIAL"
+                  Margin="0,14,0,0">
+            <DataGrid ItemsSource="{Binding PhenotypeExpressionRows}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      HeadersVisibility="Column"
+                      Margin="4">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Canal"
+                                        Binding="{Binding ChannelLabel}"
+                                        Width="190" />
+                    <DataGridTextColumn Header="Organismos"
+                                        Binding="{Binding ExpressingOrganisms}"
+                                        Width="95" />
+                    <DataGridTextColumn Header="Media"
+                                        Binding="{Binding AverageModifier, StringFormat=F4}"
+                                        Width="90" />
+                    <DataGridTextColumn Header="Std"
+                                        Binding="{Binding StandardDeviation, StringFormat=F4}"
+                                        Width="90" />
+                    <DataGridTextColumn Header="Mín."
+                                        Binding="{Binding MinimumModifier, StringFormat=F4}"
+                                        Width="90" />
+                    <DataGridTextColumn Header="Máx."
+                                        Binding="{Binding MaximumModifier, StringFormat=F4}"
+                                        Width="90" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+</Page>

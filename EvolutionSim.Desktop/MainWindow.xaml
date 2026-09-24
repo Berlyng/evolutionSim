@@ -1,0 +1,235 @@
+﻿<Window x:Class="EvolutionSim.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EvolutionSim Desktop"
+        Width="1440"
+        Height="920"
+        MinWidth="1120"
+        MinHeight="720"
+        FontFamily="Segoe UI"
+        Background="{StaticResource BgBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ================================================== -->
+        <!-- SIDEBAR                                            -->
+        <!-- ================================================== -->
+        <Border Grid.Column="0"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush1}"
+                BorderThickness="0,0,1,0">
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0"
+                            Margin="4,8,4,24">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="11"
+                                Height="11"
+                                CornerRadius="5.5"
+                                Background="{StaticResource AccentBrush}"
+                                VerticalAlignment="Center"
+                                Margin="0,0,10,0" />
+                        <TextBlock Text="EvolutionSim"
+                                   FontSize="21"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <TextBlock Text="EVOLUTIONARY WORLD LAB"
+                               Margin="21,5,0,0"
+                               Style="{StaticResource EyebrowText}" />
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="SIMULACIÓN"
+                                   Style="{StaticResource EyebrowText}"
+                                   Margin="8,0,0,10" />
+
+                        <Button x:Name="DashboardNavButton"
+                                Content="◈   Dashboard"
+                                Style="{StaticResource NavButtonActive}"
+                                Click="DashboardNavButton_Click" />
+
+                        <Button x:Name="SpeciesHistoryNavButton"
+                                Content="⌁   Historia de especies"
+                                Style="{StaticResource NavButton}"
+                                Click="SpeciesHistoryNavButton_Click" />
+
+                        <Button x:Name="PhylogenyNavButton"
+                                Content="⑂   Filogenia"
+                                Style="{StaticResource NavButton}"
+                                Click="PhylogenyNavButton_Click" />
+
+                        <Button x:Name="GeneticsNavButton"
+                                Content="⌬   Genética"
+                                Style="{StaticResource NavButton}"
+                                Click="GeneticsNavButton_Click" />
+
+                        <TextBlock Text="ANÁLISIS"
+                                   Style="{StaticResource EyebrowText}"
+                                   Margin="8,18,0,10" />
+
+                        <Button x:Name="TrendsNavButton"
+                                Content="⌁   Tendencias"
+                                Style="{StaticResource NavButton}"
+                                Click="TrendsNavButton_Click" />
+
+                        <Button x:Name="PatchesNavButton"
+                                Content="▦   Patches"
+                                Style="{StaticResource NavButton}"
+                                Click="PatchesNavButton_Click" />
+
+                        <Button x:Name="MovementNavButton"
+                                Content="⇄   Movimiento"
+                                Style="{StaticResource NavButton}"
+                                Click="MovementNavButton_Click" />
+
+                        <TextBlock Text="TIEMPO"
+                                   Style="{StaticResource EyebrowText}"
+                                   Margin="8,18,0,10" />
+
+                        <Button x:Name="ReplayNavButton"
+                                Content="◷   Historial / Replay"
+                                Style="{StaticResource NavButton}"
+                                Click="ReplayNavButton_Click" />
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Border Grid.Row="2"
+                        Background="{StaticResource SurfaceAltBrush}"
+                        BorderBrush="{StaticResource BorderBrush1}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="12"
+                        Margin="0,16,0,0">
+                    <StackPanel>
+                        <TextBlock Text="ESTADO"
+                                   Style="{StaticResource EyebrowText}" />
+                        <TextBlock x:Name="StatusText"
+                                   Text="Pausado · listo para iniciar"
+                                   Margin="0,6,0,0"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontSize="12"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ================================================== -->
+        <!-- MAIN SHELL                                         -->
+        <!-- ================================================== -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="54" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush1}"
+                    BorderThickness="0,0,0,1">
+                <DockPanel Margin="22,0">
+                    <StackPanel DockPanel.Dock="Left"
+                                VerticalAlignment="Center">
+                        <TextBlock x:Name="PageTitleText"
+                                   Text="Dashboard"
+                                   FontSize="20"
+                                   FontWeight="Bold" />
+                        <TextBlock x:Name="PageSubtitleText"
+                                   Text="Estado general del mundo y especies confirmadas"
+                                   Margin="0,3,0,0"
+                                   FontSize="11.5"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Right"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <Button x:Name="StartButton"
+                                Content="▶  Start"
+                                Width="92"
+                                Margin="0,0,8,0"
+                                Style="{StaticResource PrimaryButton}"
+                                Click="StartButton_Click" />
+
+                        <Button x:Name="PauseButton"
+                                Content="❙❙  Pause"
+                                Width="92"
+                                Margin="0,0,8,0"
+                                Click="PauseButton_Click" />
+
+                        <Button x:Name="StepButton"
+                                Content="⇥  Step"
+                                Width="92"
+                                Margin="0,0,8,0"
+                                Click="StepButton_Click" />
+
+                        <Button x:Name="ResetButton"
+                                Content="↺  Reset"
+                                Width="92"
+                                Click="ResetButton_Click" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <Frame x:Name="MainFrame"
+                   Grid.Row="1"
+                   NavigationUIVisibility="Hidden"
+                   Background="{StaticResource BgBrush}" />
+
+            <Border Grid.Row="2"
+                    Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush1}"
+                    BorderThickness="0,1,0,0">
+                <DockPanel Margin="22,0">
+                    <StackPanel DockPanel.Dock="Left"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <Border Width="8"
+                                Height="8"
+                                CornerRadius="4"
+                                Background="{StaticResource AccentBrush}"
+                                Margin="0,0,9,0" />
+                        <TextBlock Text="EvolutionSim · Desktop"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   FontSize="11.5"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Right"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="VELOCIDAD"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,10,0"
+                                   Style="{StaticResource EyebrowText}" />
+                        <ComboBox x:Name="SpeedComboBox"
+                                  Width="120"
+                                  SelectedIndex="1"
+                                  SelectionChanged="SpeedComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Lenta" Tag="500" />
+                            <ComboBoxItem Content="Normal" Tag="150" />
+                            <ComboBoxItem Content="Rápida" Tag="30" />
+                        </ComboBox>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

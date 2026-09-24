@@ -1,0 +1,4 @@
+Coupling,MaxEnergyEffectPercent,Runs,ExtinctionCount,ExtinctionRate,LlanuraFinalZeroCount,LlanuraFinalZeroRate,LlanuraEstablishedThenExtinctCount,LlanuraEstablishedThenExtinctRate,FinalPopulationMean,FinalPopulationMedian,MinimumPopulationMean,MinimumPopulationMedian,FinalSpeciesMean,FinalSpeciesMedian,LlanuraPopulationMean,LlanuraPopulationMedian,ParentMinusLivingModifierMean,ValleBosqueMateAcceptanceMean,ValleLlanuraMateAcceptanceMean,BosqueLlanuraMateAcceptanceMean
+0.0000,0.000,20,4,0.200000,6,0.300000,20,1.000000,5131.400,3745.500,138.350,37.000,1.050,1.000,489.450,51.000,-0.000073,0.902541,0.546213,0.388600
+0.1250,1.000,20,1,0.050000,7,0.350000,18,0.900000,4788.000,2664.500,166.800,85.500,1.200,1.000,620.050,170.500,0.000170,0.934502,0.580978,0.449696
+0.2500,2.000,20,1,0.050000,5,0.250000,19,0.950000,4742.650,3462.500,230.250,120.000,1.350,1.000,817.650,1007.500,-0.000040,0.862038,0.656620,0.419666

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EvolutionSim.Desktop/EvolutionSim.Desktop.csproj" Id="32e62d74-f40a-421f-bc96-62dc3dc26462" />
+  <Project Path="EvolutionSim/EvolutionSim.csproj" />
+</Solution>
