@@ -1,0 +1,152 @@
+EVOLUTIONSIM
+ESTADO FENOTÍPICO OFICIAL AL CIERRE DE LA FASE 7
+=================================================
+
+PERFIL NORMAL
+-------------
+
+MetabolicEfficiency
+Estado:
+ACTIVO
+
+Coupling:
+0.125
+
+Efecto máximo:
+±1 %
+
+Vía causal:
+MetabolicEfficiency
+-> multiplicador del costo energético
+-> gasto energético total
+
+Decisión:
+Validado mediante estudio multiseed.
+Se conserva como efecto ecológico activo.
+
+
+ThermalRegulation
+Estado:
+ACTIVO
+
+Coupling:
+0.125
+
+Efecto máximo:
+±1 %
+
+Vía causal:
+ThermalRegulation
+-> diferencia térmica efectiva
+-> thermal stress / thermal fitness
+-> efectos térmicos existentes
+
+Decisión:
+Validado mediante estudio multiseed.
+La corrección 7.6.1 demostró que el error estaba en el scope
+diagnóstico y no en la biología.
+Se conserva como efecto ecológico activo.
+
+
+BodySize
+Estado:
+PASIVO
+
+Coupling:
+0.0
+
+Mecanismo experimental conservado:
+BodySize
+-> MaxEnergy
+
+Valores estudiados:
+±0.25 %
+±0.50 %
+±1 %
+±2 %
+
+Decisión:
+No activar en la ecología actual.
+Los cambios pequeños generaron alta sensibilidad demográfica y no
+apareció una señal reproductiva suficientemente robusta.
+
+
+Locomotion
+Estado:
+PASIVO
+
+Coupling:
+0.0
+
+Mecanismo experimental conservado:
+Locomotion
+-> ActivityCost
+
+Valores estudiados:
+±1 %
+±2 %
+
+Decisión:
+No activar en la ecología actual.
+La demografía cambió significativamente, pero los padres efectivos no
+mostraron una señal consistente hacia una mayor eficiencia locomotora.
+
+
+FeedingSpecialization
+Estado:
+PASIVO
+
+Coupling:
+0.0
+
+Mecanismo experimental conservado:
+FeedingSpecialization
+-> energía vegetal utilizable
+
+Valores estudiados:
+±1 %
+±2 %
+
+Decisión:
+No activar en la ecología actual.
+La población global podía aumentar, pero se agravaban cuellos de
+botella y la persistencia de Llanura.
+La señal padres-vivos fue mayoritariamente contraria a una selección
+consistente hacia mayor asimilación.
+
+
+RESUMEN
+-------
+
+ACTIVOS:
+- MetabolicEfficiency = 0.125
+- ThermalRegulation   = 0.125
+
+PASIVOS:
+- BodySize              = 0.0
+- Locomotion            = 0.0
+- FeedingSpecialization = 0.0
+
+
+PRINCIPIO CONSERVADO
+--------------------
+Un canal no se activa porque exista en el genoma.
+
+Debe existir evidencia de que:
+
+1. su mecanismo es causalmente claro;
+2. el control permanece reproducible;
+3. la señal de selección es coherente;
+4. no introduce fragilidad ecológica injustificada;
+5. los resultados se sostienen en varias seeds.
+
+
+ESTADO DE LA FASE
+-----------------
+Con este perfil se considera cerrada la etapa:
+
+FASE 7 — DYNAMIC GENOME & PHENOTYPE
+
+El siguiente bloque del roadmap es:
+
+FASE 8 — MORPHOLOGY

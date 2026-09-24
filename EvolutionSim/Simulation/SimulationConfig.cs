@@ -16,57 +16,73 @@ public sealed record SimulationConfig(
     /// <summary>
     /// Coupling ecológico de ThermalRegulation.
     ///
-    /// Se mantiene fuera del constructor posicional para no romper
-    /// llamadas existentes a SimulationConfig.
+    /// Fase 7.10:
+    /// queda oficialmente activo con el valor validado en 7.6.2.
     ///
-    /// Fase 7.6.2:
-    /// 0.125 queda congelado como valor normal validado.
-    ///
-    /// 0.000 = control/pasivo.
-    /// 0.125 = modifier ±0.08 produce un efecto térmico máximo de ±1 %.
-    /// 0.250 = modifier ±0.08 produce un efecto térmico máximo de ±2 %.
+    /// Los experimentos pueden sobrescribir este valor sin modificar
+    /// el perfil normal de producción.
     /// </summary>
     public double ThermalRegulationEcologicalCoupling
     {
         get;
         init;
-    } = 0.125;
+    } =
+        PhenotypePhase7Profile
+            .ThermalRegulationCoupling;
 
 
     /// <summary>
-    /// Coupling ecológico experimental de BodySize.
+    /// Coupling ecológico de BodySize.
     ///
-    /// Fase 7.7:
-    /// BodySize permanece en 0.0 en la simulación normal hasta completar
-    /// el estudio emparejado.
+    /// Fase 7.10:
+    /// queda oficialmente PASIVO.
     ///
-    /// 0.000 = control/pasivo.
-    /// 0.125 = modifier ±0.08 produce un efecto máximo de ±1 % sobre MaxEnergy.
-    /// 0.250 = modifier ±0.08 produce un efecto máximo de ±2 % sobre MaxEnergy.
+    /// El mecanismo experimental BodySize -> MaxEnergy se conserva,
+    /// pero no participa en la simulación normal.
     /// </summary>
     public double BodySizeEcologicalCoupling
     {
         get;
         init;
-    } = 0.0;
+    } =
+        PhenotypePhase7Profile
+            .BodySizeCoupling;
 
 
     /// <summary>
-    /// Coupling ecológico experimental de Locomotion.
+    /// Coupling ecológico de Locomotion.
     ///
-    /// Fase 7.8:
-    /// Locomotion permanece en 0.0 en la simulación normal hasta completar
-    /// el estudio emparejado.
+    /// Fase 7.10:
+    /// queda oficialmente PASIVO.
     ///
-    /// 0.000 = control/pasivo.
-    /// 0.125 = modifier ±0.08 produce un efecto máximo de ±1 % sobre ActivityCost.
-    /// 0.250 = modifier ±0.08 produce un efecto máximo de ±2 % sobre ActivityCost.
+    /// El mecanismo experimental Locomotion -> ActivityCost se conserva,
+    /// pero no participa en la simulación normal.
     /// </summary>
     public double LocomotionEcologicalCoupling
     {
         get;
         init;
-    } = 0.0;
+    } =
+        PhenotypePhase7Profile
+            .LocomotionCoupling;
+
+
+    /// <summary>
+    /// Coupling ecológico de FeedingSpecialization.
+    ///
+    /// Fase 7.10:
+    /// queda oficialmente PASIVO.
+    ///
+    /// El mecanismo experimental sobre energía vegetal utilizable se
+    /// conserva, pero no participa en la simulación normal.
+    /// </summary>
+    public double FeedingSpecializationEcologicalCoupling
+    {
+        get;
+        init;
+    } =
+        PhenotypePhase7Profile
+            .FeedingSpecializationCoupling;
 
 
     public static SimulationConfig Default { get; } =
@@ -98,16 +114,17 @@ public sealed record SimulationConfig(
             SpeciesDetectionInterval:
                 25,
 
-            // Phase 7.5:
-            // MetabolicEfficiency queda activo de forma conservadora.
-            // Phenotype modifier ±0.08 × 0.125
+            // Fase 7.10:
+            // MetabolicEfficiency queda oficialmente activo.
+            // Modifier ±0.08 × coupling 0.125
             // => efecto ecológico máximo ±1 %.
             MetabolicEfficiencyEcologicalCoupling:
-                0.125,
+                PhenotypePhase7Profile
+                    .MetabolicEfficiencyCoupling,
 
             // false = simulación normal con todos los diagnósticos.
-            // true  = las corridas experimentales omiten telemetría
-            //         pesada en ciclos intermedios.
+            // true  = corridas experimentales con telemetría intermedia
+            //         reducida para acelerar estudios multiseed.
             FastExperimentMode:
                 false
         );

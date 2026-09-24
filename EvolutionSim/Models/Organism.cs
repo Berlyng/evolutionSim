@@ -31,6 +31,86 @@ public class Organism
 
 
     /// <summary>
+    /// Fase 7.9:
+    /// expresión del genoma estructural asignada al canal
+    /// FeedingSpecialization.
+    ///
+    /// Rango:
+    /// -0.08 .. +0.08
+    ///
+    /// En esta primera activación solo modifica la energía utilizable
+    /// obtenida de la biomasa vegetal ya consumida.
+    /// </summary>
+    public double FeedingSpecializationModifier =>
+        _phenotype.FeedingSpecialization;
+
+
+    /// <summary>
+    /// Multiplicador aplicado únicamente a la energía vegetal utilizable.
+    ///
+    /// Coupling 0:
+    ///     siempre 1.0, control ecológico exacto.
+    ///
+    /// Coupling 0.125:
+    ///     modifier ±0.08 => efecto máximo ±1 %.
+    ///
+    /// Coupling 0.25:
+    ///     modifier ±0.08 => efecto máximo ±2 %.
+    ///
+    /// Modifier positivo obtiene más energía de la misma biomasa.
+    /// Modifier negativo obtiene menos energía de la misma biomasa.
+    ///
+    /// No modifica la cantidad de plantas consumidas, la elección de
+    /// estrategia alimentaria, caza, carroñeo ni preferencias.
+    /// </summary>
+    public double FeedingSpecializationPlantEnergyMultiplier
+    {
+        get
+        {
+            double coupling =
+                PhenotypeEcologyContext
+                    .FeedingSpecializationCoupling;
+
+
+            double maximumDeviation =
+                0.08
+                *
+                coupling;
+
+
+            return Math.Clamp(
+                1
+                +
+                (
+                    FeedingSpecializationModifier
+                    *
+                    coupling
+                ),
+                1
+                -
+                maximumDeviation,
+                1
+                +
+                maximumDeviation
+            );
+        }
+    }
+
+
+    /// <summary>
+    /// Factor diagnóstico que combina la digestión vegetal histórica con
+    /// el efecto fenotípico experimental de FeedingSpecialization.
+    ///
+    /// No sustituye PlantDigestionEfficiency; solo permite observar la
+    /// eficiencia final que se aplica a la energía vegetal.
+    /// </summary>
+    public double EffectivePlantEnergyAssimilation =>
+        PlantDigestionEfficiency
+        *
+        FeedingSpecializationPlantEnergyMultiplier;
+
+
+    /// <summary>
     /// Fase 7.8:
     /// expresión del genoma estructural asignada al canal Locomotion.
     ///

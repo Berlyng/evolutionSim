@@ -33,7 +33,8 @@ public sealed record SimulationStepResult(
     SimulationBoomBustDiagnosticsStepResult? BoomBustDiagnostics = null,
     SimulationThermalRegulationDiagnosticsStepResult? ThermalRegulationDiagnostics = null,
     SimulationBodySizeDiagnosticsStepResult? BodySizeDiagnostics = null,
-    SimulationLocomotionDiagnosticsStepResult? LocomotionDiagnostics = null
+    SimulationLocomotionDiagnosticsStepResult? LocomotionDiagnostics = null,
+    SimulationFeedingSpecializationDiagnosticsStepResult? FeedingSpecializationDiagnostics = null
 );
 
 public sealed record SimulationRegionStepResult(
@@ -424,6 +425,43 @@ public sealed record SimulationLocomotionCohortStepResult(
     double AverageActivityCost,
     double AverageBasalMetabolicCost,
     double AverageEnergyCost,
+    double P10Modifier,
+    double P50Modifier,
+    double P90Modifier
+);
+
+
+
+public sealed record SimulationFeedingSpecializationDiagnosticsStepResult(
+    int Population,
+    int EffectiveParents,
+    SimulationFeedingSpecializationCohortStepResult Overall,
+    SimulationFeedingSpecializationCohortStepResult Parents,
+    IReadOnlyList<SimulationFeedingSpecializationRegionStepResult> Regions
+);
+
+
+public sealed record SimulationFeedingSpecializationRegionStepResult(
+    int RegionId,
+    string RegionName,
+    SimulationFeedingSpecializationCohortStepResult Living,
+    SimulationFeedingSpecializationCohortStepResult Parents
+);
+
+
+public sealed record SimulationFeedingSpecializationCohortStepResult(
+    string Name,
+    int Count,
+    int Beneficial,
+    int Detrimental,
+    int Neutral,
+    double AverageModifier,
+    double AveragePlantEnergyMultiplier,
+    double AveragePlantDigestionEfficiency,
+    double AverageEffectivePlantEnergyAssimilation,
+    double AverageFeedingCapacity,
+    double AverageCurrentEnergy,
+    double AverageEnergyFillFraction,
     double P10Modifier,
     double P50Modifier,
     double P90Modifier

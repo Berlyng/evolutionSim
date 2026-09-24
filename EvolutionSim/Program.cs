@@ -1,6 +1,17 @@
 ﻿using EvolutionSim.Experiments;
 using EvolutionSim.Simulation;
 
+bool runFeedingSpecializationExperiment =
+    args.Any(
+        argument =>
+            string.Equals(
+                argument,
+                "--feeding-experiment",
+                StringComparison.OrdinalIgnoreCase
+            )
+    );
+
+
 bool runLocomotionExperiment =
     args.Any(
         argument =>
@@ -43,6 +54,19 @@ bool runMetabolicExperiment =
                 StringComparison.OrdinalIgnoreCase
             )
     );
+
+
+if (runFeedingSpecializationExperiment)
+{
+    FeedingSpecializationExperimentRunner experiment =
+        new();
+
+
+    experiment.RunDefault();
+
+
+    return;
+}
 
 
 if (runLocomotionExperiment)

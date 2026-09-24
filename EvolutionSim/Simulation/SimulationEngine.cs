@@ -39,6 +39,9 @@ public sealed class SimulationEngine
     private readonly LocomotionSelectionDiagnosticsCalculator
         _locomotionSelectionDiagnosticsCalculator;
 
+    private readonly FeedingSpecializationSelectionDiagnosticsCalculator
+        _feedingSpecializationSelectionDiagnosticsCalculator;
+
     public SimulationState State =>
         _state;
 
@@ -87,6 +90,9 @@ public sealed class SimulationEngine
 
         _locomotionSelectionDiagnosticsCalculator =
             new LocomotionSelectionDiagnosticsCalculator();
+
+        _feedingSpecializationSelectionDiagnosticsCalculator =
+            new FeedingSpecializationSelectionDiagnosticsCalculator();
 
         // La especie ancestral ya fue detectada por SimulationFactory
         // antes de construir el motor.
@@ -140,6 +146,14 @@ public sealed class SimulationEngine
                 .PushLocomotionCoupling(
                     config
                         .LocomotionEcologicalCoupling
+                );
+
+
+        using IDisposable feedingSpecializationPhenotypeEcologyScope =
+            PhenotypeEcologyContext
+                .PushFeedingSpecializationCoupling(
+                    config
+                        .FeedingSpecializationEcologicalCoupling
                 );
 
 
@@ -1840,6 +1854,66 @@ public sealed class SimulationEngine
                     );
 
 
+            FeedingSpecializationSelectionDiagnostics
+                feedingSpecializationDiagnostics =
+                    _feedingSpecializationSelectionDiagnosticsCalculator
+                        .Calculate(
+                            state.World,
+                            state.Population,
+                            effectiveParents
+                        );
+
+
+            SimulationFeedingSpecializationDiagnosticsStepResult
+                feedingSpecializationDiagnosticsResult =
+                    new(
+                        Population:
+                            feedingSpecializationDiagnostics
+                                .Population,
+
+                        EffectiveParents:
+                            feedingSpecializationDiagnostics
+                                .EffectiveParents,
+
+                        Overall:
+                            MapFeedingSpecializationCohort(
+                                feedingSpecializationDiagnostics
+                                    .Overall
+                            ),
+
+                        Parents:
+                            MapFeedingSpecializationCohort(
+                                feedingSpecializationDiagnostics
+                                    .Parents
+                            ),
+
+                        Regions:
+                            feedingSpecializationDiagnostics
+                                .Regions
+                                .Select(
+                                    region =>
+                                        new SimulationFeedingSpecializationRegionStepResult(
+                                            RegionId:
+                                                region.RegionId,
+
+                                            RegionName:
+                                                region.RegionName,
+
+                                            Living:
+                                                MapFeedingSpecializationCohort(
+                                                    region.Living
+                                                ),
+
+                                            Parents:
+                                                MapFeedingSpecializationCohort(
+                                                    region.Parents
+                                                )
+                                        )
+                                )
+                                .ToList()
+                    );
+
+
             List<SimulationMigrationRouteStepResult>
                 migrationRouteResults =
                     migrationSystem.LastMigrationRoutes
@@ -2036,7 +2110,8 @@ public sealed class SimulationEngine
                     BoomBustDiagnostics: boomBustDiagnosticsResult,
                     ThermalRegulationDiagnostics: thermalRegulationDiagnosticsResult,
                     BodySizeDiagnostics: bodySizeDiagnosticsResult,
-                    LocomotionDiagnostics: locomotionDiagnosticsResult
+                    LocomotionDiagnostics: locomotionDiagnosticsResult,
+                    FeedingSpecializationDiagnostics: feedingSpecializationDiagnosticsResult
                 );
 
 
@@ -2229,6 +2304,35 @@ public sealed class SimulationEngine
                         $"ActMult: {locomotionRegion.Living.AverageActivityCostMultiplier:F4} | " +
                         $"BaseAct: {locomotionRegion.Living.AverageBaseActivityCost:F3} | " +
                         $"Act: {locomotionRegion.Living.AverageActivityCost:F3}"
+                    );
+                }
+
+
+                _output.WriteLine(
+                    $"   FeedingSpecialization vegetal | " +
+                    $"Living Avg: {feedingSpecializationDiagnostics.Overall.AverageModifier:+0.0000;-0.0000;0.0000} | " +
+                    $"Parents Avg: {feedingSpecializationDiagnostics.Parents.AverageModifier:+0.0000;-0.0000;0.0000} | " +
+                    $"EnergyMult: {feedingSpecializationDiagnostics.Overall.AveragePlantEnergyMultiplier:F4} | " +
+                    $"PlantDig: {feedingSpecializationDiagnostics.Overall.AveragePlantDigestionEfficiency:F3} | " +
+                    $"Assim: {feedingSpecializationDiagnostics.Overall.AverageEffectivePlantEnergyAssimilation:F3} | " +
+                    $"Fill: {feedingSpecializationDiagnostics.Overall.AverageEnergyFillFraction:P1} | " +
+                    $"Parents: {feedingSpecializationDiagnostics.EffectiveParents}"
+                );
+
+
+                foreach (
+                    FeedingSpecializationRegionSelectionDiagnostics feedingRegion
+                    in feedingSpecializationDiagnostics.Regions
+                )
+                {
+                    _output.WriteLine(
+                        $"      {feedingRegion.RegionName,-18} | " +
+                        $"Living: {feedingRegion.Living.Count,5} | " +
+                        $"LAvg: {feedingRegion.Living.AverageModifier:+0.0000;-0.0000;0.0000} | " +
+                        $"PAvg: {feedingRegion.Parents.AverageModifier:+0.0000;-0.0000;0.0000} | " +
+                        $"EnergyMult: {feedingRegion.Living.AveragePlantEnergyMultiplier:F4} | " +
+                        $"PlantDig: {feedingRegion.Living.AveragePlantDigestionEfficiency:F3} | " +
+                        $"Assim: {feedingRegion.Living.AverageEffectivePlantEnergyAssimilation:F3}"
                     );
                 }
 
@@ -3583,6 +3687,59 @@ public sealed class SimulationEngine
                 state.Population.Count
                 ==
                 0
+        );
+    }
+
+
+    private static SimulationFeedingSpecializationCohortStepResult
+        MapFeedingSpecializationCohort(
+            FeedingSpecializationCohortDiagnostics cohort)
+    {
+        return new SimulationFeedingSpecializationCohortStepResult(
+            Name:
+                cohort.Name,
+
+            Count:
+                cohort.Count,
+
+            Beneficial:
+                cohort.Beneficial,
+
+            Detrimental:
+                cohort.Detrimental,
+
+            Neutral:
+                cohort.Neutral,
+
+            AverageModifier:
+                cohort.AverageModifier,
+
+            AveragePlantEnergyMultiplier:
+                cohort.AveragePlantEnergyMultiplier,
+
+            AveragePlantDigestionEfficiency:
+                cohort.AveragePlantDigestionEfficiency,
+
+            AverageEffectivePlantEnergyAssimilation:
+                cohort.AverageEffectivePlantEnergyAssimilation,
+
+            AverageFeedingCapacity:
+                cohort.AverageFeedingCapacity,
+
+            AverageCurrentEnergy:
+                cohort.AverageCurrentEnergy,
+
+            AverageEnergyFillFraction:
+                cohort.AverageEnergyFillFraction,
+
+            P10Modifier:
+                cohort.P10Modifier,
+
+            P50Modifier:
+                cohort.P50Modifier,
+
+            P90Modifier:
+                cohort.P90Modifier
         );
     }
 

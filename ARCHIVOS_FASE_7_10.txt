@@ -1,0 +1,24 @@
+FASE 7.10 — ARCHIVOS
+
+REEMPLAZAR:
+- EvolutionSim/Simulation/SimulationConfig.cs
+
+NUEVO:
+- EvolutionSim/Simulation/PhenotypePhase7Profile.cs
+
+DOCUMENTACIÓN:
+- README_FASE_7_10.txt
+- ESTADO_FENOTIPICO_FASE_7.txt
+
+NO CAMBIAN:
+- EvolutionSim/Program.cs
+- EvolutionSim/Models/Organism.cs
+- EvolutionSim/Models/PhenotypeEcologyContext.cs
+- EvolutionSim/Ecology/GrazingSystem.cs
+- EvolutionSim/Simulation/SimulationEngine.cs
+- EvolutionSim/Simulation/SimulationStepResult.cs
+- todos los diagnósticos
+- todos los runners experimentales
+
+NUGET:
+- ninguno

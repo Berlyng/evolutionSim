@@ -32,6 +32,11 @@ public static class PhenotypeEcologyContext
             new();
 
 
+    private static readonly AsyncLocal<double?>
+        FeedingSpecializationCouplingSlot =
+            new();
+
+
     public static double MetabolicEfficiencyCoupling =>
         MetabolicEfficiencyCouplingSlot.Value
         ??
@@ -52,6 +57,12 @@ public static class PhenotypeEcologyContext
 
     public static double LocomotionCoupling =>
         LocomotionCouplingSlot.Value
+        ??
+        0.0;
+
+
+    public static double FeedingSpecializationCoupling =>
+        FeedingSpecializationCouplingSlot.Value
         ??
         0.0;
 
@@ -163,6 +174,34 @@ public static class PhenotypeEcologyContext
             restore:
                 () =>
                     LocomotionCouplingSlot.Value =
+                        previous
+        );
+    }
+
+
+    public static IDisposable PushFeedingSpecializationCoupling(
+        double coupling)
+    {
+        double normalized =
+            Math.Clamp(
+                coupling,
+                0,
+                1
+            );
+
+
+        double? previous =
+            FeedingSpecializationCouplingSlot.Value;
+
+
+        FeedingSpecializationCouplingSlot.Value =
+            normalized;
+
+
+        return new Scope(
+            restore:
+                () =>
+                    FeedingSpecializationCouplingSlot.Value =
                         previous
         );
     }

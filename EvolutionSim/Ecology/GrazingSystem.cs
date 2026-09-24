@@ -187,10 +187,26 @@ public sealed class GrazingSystem
         // mediante PlantDigestionEfficiency.
         //
 
+        // =====================================================
+        // ESPECIALIZACIÓN ALIMENTARIA FENOTÍPICA
+        // =====================================================
+        //
+        // Fase 7.9:
+        // FeedingSpecialization NO modifica cuánta biomasa consume
+        // el organismo. Solo cambia ligeramente cuánta energía obtiene
+        // de esa biomasa después de la digestión vegetal histórica.
+        //
+        // Con coupling 0:
+        // FeedingSpecializationPlantEnergyMultiplier = 1.0
+        // y el comportamiento es exactamente el histórico.
+        //
+
         double usablePlantEnergy =
             rawPlantEnergy
             *
-            organism.PlantDigestionEfficiency;
+            organism.PlantDigestionEfficiency
+            *
+            organism.FeedingSpecializationPlantEnergyMultiplier;
 
 
         organism.Eat(
