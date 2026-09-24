@@ -45,6 +45,9 @@ public sealed class SimulationEngine
     private readonly MorphologyStatisticsCalculator
         _morphologyStatisticsCalculator;
 
+    private readonly MorphologyDivergenceCalculator
+        _morphologyDivergenceCalculator;
+
     public SimulationState State =>
         _state;
 
@@ -99,6 +102,11 @@ public sealed class SimulationEngine
 
         _morphologyStatisticsCalculator =
             new MorphologyStatisticsCalculator();
+
+        _morphologyDivergenceCalculator =
+            new MorphologyDivergenceCalculator(
+                new GeneticDistanceCalculator()
+            );
 
         // La especie ancestral ya fue detectada por SimulationFactory
         // antes de construir el motor.
@@ -1094,6 +1102,41 @@ public sealed class SimulationEngine
                 _speciesHistoryTracker.RecordSimulationExtinction(
                     cycle
                 );
+            }
+
+
+            MorphologyDivergenceAnalysis?
+                morphologyDivergence =
+                    null;
+
+
+            if (
+                cycle
+                %
+                speciesDetectionInterval
+                ==
+                0
+                &&
+                state.Population.Count
+                >
+                0
+            )
+            {
+                morphologyDivergence =
+                    _morphologyDivergenceCalculator
+                        .Calculate(
+                            world:
+                                state.World,
+
+                            population:
+                                state.Population,
+
+                            detectedSpecies:
+                                state.DetectedSpecies,
+
+                            calculateSpeciesComparisons:
+                                true
+                        );
             }
 
 
@@ -2152,6 +2195,22 @@ public sealed class SimulationEngine
             }
 
 
+            SimulationMorphologyDivergenceStepResult?
+                morphologyDivergenceResult =
+                    morphologyDivergence
+                    is null
+
+                        ?
+
+                        null
+
+                        :
+
+                        MapMorphologyDivergence(
+                            morphologyDivergence
+                        );
+
+
             stepResult =
                 new SimulationStepResult(
                     Cycle: cycle,
@@ -2188,7 +2247,8 @@ public sealed class SimulationEngine
                     BodySizeDiagnostics: bodySizeDiagnosticsResult,
                     LocomotionDiagnostics: locomotionDiagnosticsResult,
                     FeedingSpecializationDiagnostics: feedingSpecializationDiagnosticsResult,
-                    MorphologyDiagnostics: morphologyDiagnosticsResult
+                    MorphologyDiagnostics: morphologyDiagnosticsResult,
+                    MorphologyDivergence: morphologyDivergenceResult
                 );
 
 
@@ -3397,6 +3457,80 @@ public sealed class SimulationEngine
                 }
 
 
+                if (
+                    morphologyDivergence
+                    is not null
+                )
+                {
+                    _output.WriteLine();
+
+
+                    _output.WriteLine(
+                        $"   Divergencia morfologica regional [Ciclo {cycle}]:"
+                    );
+
+
+                    foreach (
+                        MorphologyDivergenceComparison comparison
+                        in morphologyDivergence.RegionalComparisons
+                    )
+                    {
+                        PrintMorphologyDivergenceComparison(
+                            comparison
+                        );
+                    }
+
+
+                    if (
+                        morphologyDivergence.SpeciesAssignment
+                        is not null
+                    )
+                    {
+                        SpeciesMorphologyAssignmentDiagnostics assignment =
+                            morphologyDivergence.SpeciesAssignment;
+
+
+                        _output.WriteLine();
+
+
+                        _output.WriteLine(
+                            $"   Asignacion morfologica por especie | " +
+                            $"Asignados: {assignment.AssignedPopulation}/{assignment.Population} | " +
+                            $"Capacidad oficial: {assignment.OfficialSpeciesPopulationSum} | " +
+                            $"CapOK: {assignment.CapacitiesMatchPopulation} | " +
+                            $"NearestMatch: {assignment.DirectNearestAssignmentFraction:P1} | " +
+                            $"GenDist asignada: {assignment.MeanAssignedGeneticDistance:F3}"
+                        );
+                    }
+
+
+                    if (
+                        morphologyDivergence.SpeciesComparisons.Count
+                        >
+                        0
+                    )
+                    {
+                        _output.WriteLine();
+
+
+                        _output.WriteLine(
+                            $"   Divergencia morfologica entre especies [Ciclo {cycle}]:"
+                        );
+
+
+                        foreach (
+                            MorphologyDivergenceComparison comparison
+                            in morphologyDivergence.SpeciesComparisons
+                        )
+                        {
+                            PrintMorphologyDivergenceComparison(
+                                comparison
+                            );
+                        }
+                    }
+                }
+
+
                 // ====================================================
                 // ESPECIES
                 // ====================================================
@@ -3803,6 +3937,260 @@ public sealed class SimulationEngine
                 ==
                 0
         );
+    }
+
+
+    private void PrintMorphologyDivergenceComparison(
+        MorphologyDivergenceComparison comparison)
+    {
+        _output.WriteLine(
+            $"      {comparison.GroupAName} <-> {comparison.GroupBName} | " +
+            $"Pop: {comparison.GroupAPopulation}/{comparison.GroupBPopulation} | " +
+            $"StdEffectDist: {comparison.StandardizedEffectDistance:F3}"
+        );
+
+
+        foreach (
+            MorphologyDimensionDivergence dimension
+            in comparison.Dimensions
+        )
+        {
+            _output.WriteLine(
+                $"         {dimension.Name,-20} | " +
+                $"A: {dimension.AverageA:+0.0000;-0.0000;0.0000} | " +
+                $"B: {dimension.AverageB:+0.0000;-0.0000;0.0000} | " +
+                $"Delta: {dimension.Delta:F4} | " +
+                $"PopStd: {dimension.PopulationStandardDeviation:F4} | " +
+                $"ZDelta: {dimension.ZDelta:F3} | " +
+                $"Contrib: {dimension.ContributionPercent,6:F2} %"
+            );
+        }
+    }
+
+
+    private static SimulationMorphologyDivergenceStepResult
+        MapMorphologyDivergence(
+            MorphologyDivergenceAnalysis analysis)
+    {
+        return new SimulationMorphologyDivergenceStepResult(
+            Population:
+                analysis.Population,
+
+            RegionalGroups:
+                analysis
+                    .RegionalGroups
+                    .Select(
+                        MapMorphologyGroup
+                    )
+                    .ToList(),
+
+            RegionalComparisons:
+                analysis
+                    .RegionalComparisons
+                    .Select(
+                        MapMorphologyComparison
+                    )
+                    .ToList(),
+
+            SpeciesGroups:
+                analysis
+                    .SpeciesGroups
+                    .Select(
+                        MapMorphologyGroup
+                    )
+                    .ToList(),
+
+            SpeciesComparisons:
+                analysis
+                    .SpeciesComparisons
+                    .Select(
+                        MapMorphologyComparison
+                    )
+                    .ToList(),
+
+            SpeciesAssignment:
+                analysis.SpeciesAssignment
+                is null
+
+                    ?
+
+                    null
+
+                    :
+
+                    new SimulationSpeciesMorphologyAssignmentStepResult(
+                        Population:
+                            analysis
+                                .SpeciesAssignment
+                                .Population,
+
+                        OfficialSpeciesPopulationSum:
+                            analysis
+                                .SpeciesAssignment
+                                .OfficialSpeciesPopulationSum,
+
+                        CapacitiesMatchPopulation:
+                            analysis
+                                .SpeciesAssignment
+                                .CapacitiesMatchPopulation,
+
+                        AssignedPopulation:
+                            analysis
+                                .SpeciesAssignment
+                                .AssignedPopulation,
+
+                        DirectNearestAssignments:
+                            analysis
+                                .SpeciesAssignment
+                                .DirectNearestAssignments,
+
+                        DirectNearestAssignmentFraction:
+                            analysis
+                                .SpeciesAssignment
+                                .DirectNearestAssignmentFraction,
+
+                        MeanAssignedGeneticDistance:
+                            analysis
+                                .SpeciesAssignment
+                                .MeanAssignedGeneticDistance
+                    )
+        );
+    }
+
+
+    private static SimulationMorphologyGroupStepResult
+        MapMorphologyGroup(
+            MorphologyGroupSummary group)
+    {
+        return new SimulationMorphologyGroupStepResult(
+            GroupId:
+                group.GroupId,
+
+            Name:
+                group.Name,
+
+            Population:
+                group.Population,
+
+            Dimensions:
+                group
+                    .Dimensions
+                    .Values
+                    .OrderBy(
+                        dimension =>
+                            MorphologyDimensionOrder(
+                                dimension.Name
+                            )
+                    )
+                    .Select(
+                        dimension =>
+                            new SimulationMorphologyGroupDimensionStepResult(
+                                Name:
+                                    dimension.Name,
+
+                                Average:
+                                    dimension.Average,
+
+                                StandardDeviation:
+                                    dimension.StandardDeviation,
+
+                                Minimum:
+                                    dimension.Minimum,
+
+                                Maximum:
+                                    dimension.Maximum
+                            )
+                    )
+                    .ToList()
+        );
+    }
+
+
+    private static SimulationMorphologyDivergenceComparisonStepResult
+        MapMorphologyComparison(
+            MorphologyDivergenceComparison comparison)
+    {
+        return new SimulationMorphologyDivergenceComparisonStepResult(
+            GroupAId:
+                comparison.GroupAId,
+
+            GroupAName:
+                comparison.GroupAName,
+
+            GroupAPopulation:
+                comparison.GroupAPopulation,
+
+            GroupBId:
+                comparison.GroupBId,
+
+            GroupBName:
+                comparison.GroupBName,
+
+            GroupBPopulation:
+                comparison.GroupBPopulation,
+
+            StandardizedEffectDistance:
+                comparison.StandardizedEffectDistance,
+
+            Dimensions:
+                comparison
+                    .Dimensions
+                    .Select(
+                        dimension =>
+                            new SimulationMorphologyDimensionDivergenceStepResult(
+                                Name:
+                                    dimension.Name,
+
+                                AverageA:
+                                    dimension.AverageA,
+
+                                AverageB:
+                                    dimension.AverageB,
+
+                                Delta:
+                                    dimension.Delta,
+
+                                PopulationStandardDeviation:
+                                    dimension.PopulationStandardDeviation,
+
+                                ZDelta:
+                                    dimension.ZDelta,
+
+                                ContributionPercent:
+                                    dimension.ContributionPercent
+                            )
+                    )
+                    .ToList()
+        );
+    }
+
+
+    private static int MorphologyDimensionOrder(
+        string name)
+    {
+        return name switch
+        {
+            "BodyScale" =>
+                0,
+
+            "LimbLength" =>
+                1,
+
+            "LimbRobustness" =>
+                2,
+
+            "Insulation" =>
+                3,
+
+            "JawStrength" =>
+                4,
+
+            "DigestiveStructure" =>
+                5,
+
+            _ =>
+                int.MaxValue
+        };
     }
 
 

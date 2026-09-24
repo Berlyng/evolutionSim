@@ -35,7 +35,8 @@ public sealed record SimulationStepResult(
     SimulationBodySizeDiagnosticsStepResult? BodySizeDiagnostics = null,
     SimulationLocomotionDiagnosticsStepResult? LocomotionDiagnostics = null,
     SimulationFeedingSpecializationDiagnosticsStepResult? FeedingSpecializationDiagnostics = null,
-    SimulationMorphologyDiagnosticsStepResult? MorphologyDiagnostics = null
+    SimulationMorphologyDiagnosticsStepResult? MorphologyDiagnostics = null,
+    SimulationMorphologyDivergenceStepResult? MorphologyDivergence = null
 );
 
 public sealed record SimulationRegionStepResult(
@@ -497,4 +498,66 @@ public sealed record SimulationMorphologyChannelStepResult(
     double StandardDeviation,
     double MinimumModifier,
     double MaximumModifier
+);
+
+
+
+public sealed record SimulationMorphologyDivergenceStepResult(
+    int Population,
+    IReadOnlyList<SimulationMorphologyGroupStepResult> RegionalGroups,
+    IReadOnlyList<SimulationMorphologyDivergenceComparisonStepResult> RegionalComparisons,
+    IReadOnlyList<SimulationMorphologyGroupStepResult> SpeciesGroups,
+    IReadOnlyList<SimulationMorphologyDivergenceComparisonStepResult> SpeciesComparisons,
+    SimulationSpeciesMorphologyAssignmentStepResult? SpeciesAssignment
+);
+
+
+public sealed record SimulationMorphologyGroupStepResult(
+    int GroupId,
+    string Name,
+    int Population,
+    IReadOnlyList<SimulationMorphologyGroupDimensionStepResult> Dimensions
+);
+
+
+public sealed record SimulationMorphologyGroupDimensionStepResult(
+    string Name,
+    double Average,
+    double StandardDeviation,
+    double Minimum,
+    double Maximum
+);
+
+
+public sealed record SimulationMorphologyDivergenceComparisonStepResult(
+    int GroupAId,
+    string GroupAName,
+    int GroupAPopulation,
+    int GroupBId,
+    string GroupBName,
+    int GroupBPopulation,
+    double StandardizedEffectDistance,
+    IReadOnlyList<SimulationMorphologyDimensionDivergenceStepResult> Dimensions
+);
+
+
+public sealed record SimulationMorphologyDimensionDivergenceStepResult(
+    string Name,
+    double AverageA,
+    double AverageB,
+    double Delta,
+    double PopulationStandardDeviation,
+    double ZDelta,
+    double ContributionPercent
+);
+
+
+public sealed record SimulationSpeciesMorphologyAssignmentStepResult(
+    int Population,
+    int OfficialSpeciesPopulationSum,
+    bool CapacitiesMatchPopulation,
+    int AssignedPopulation,
+    int DirectNearestAssignments,
+    double DirectNearestAssignmentFraction,
+    double MeanAssignedGeneticDistance
 );
